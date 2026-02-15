@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Bank of Mahishmathi{% endblock %}
+
+{% block content %}
+<div class="row mb-5 fade-in">
+    <div class="col-md-8">
+        <h2 class="fw-bold display-6">Welcome back, <span class="text-primary">{{ user.username }}</span></h2>
+        <p class="text-muted lead">Here's what's happening with your accounts today.</p>
+    </div>
+    <div class="col-md-4 text-end align-self-center">
+        <a href="{% url 'create_account' %}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Open New Account
+        </a>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-12 mb-3">
+        <h4 class="fw-bold text-secondary">Your Accounts</h4>
+    </div>
+    {% for account in accounts %}
+    <div class="col-md-6 col-lg-4 mb-4 slide-in-left" style="animation-delay: {{ forloop.counter0|add:'1' }}00ms;">
+        <div class="card account-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary rounded-pill px-3 py-2">{{ account.get_account_type_display }}</span>
+                    <small class="text-muted font-monospace">{{ account.account_number }}</small>
+                </div>
+                <div class="account-balance">₹{{ account.balance }}</div>
+                <p class="text-muted small mb-4">Available Balance</p>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'deposit' %}" class="btn btn-sm btn-outline-primary flex-grow-1">Deposit</a>
+                    <a href="{% url 'withdraw' %}" class="btn btn-sm btn-outline-primary flex-grow-1">Withdraw</a>
+                    <a href="{% url 'transfer' %}" class="btn btn-sm btn-outline-primary flex-grow-1">Transfer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 fade-in">
+        <div class="card p-5 text-center bg-light border-dashed">
+            <div class="mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor"
+                    class="bi bi-wallet2 text-muted" viewBox="0 0 16 16">
+                    <path
+                        d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z" />
+                </svg>
+            </div>
+            <h4 class="text-muted">No accounts yet</h4>
+            <p class="mb-4">Open your first savings or current account to get started with Bank of Mahishmathi.</p>
+            <div>
+                <a href="{% url 'create_account' %}" class="btn btn-primary">Open Account</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row fade-in" style="animation-delay: 0.5s;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Recent Transactions</h5>
+                <a href="#" class="text-decoration-none small fw-bold">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Date & Time</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th class="text-end pe-4">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in recent_transactions %}
+                        <tr>
+                            <td class="ps-4 text-nowrap">
+                                <div class="fw-bold text-dark">{{ tx.timestamp|date:"M d, Y" }}</div>
+                                <div class="small text-muted">{{ tx.timestamp|date:"H:i" }}</div>
+                            </td>
+                            <td>{{ tx.description }}</td>
+                            <td>
+                                <span class="badge rounded-pill
+                                    {% if tx.transaction_type == 'DEPOSIT' %}bg-success
+                                    {% elif tx.transaction_type == 'WITHDRAWAL' %}bg-danger
+                                    {% else %}bg-info{% endif %} bg-opacity-10 
+                                    {% if tx.transaction_type == 'DEPOSIT' %}text-success
+                                    {% elif tx.transaction_type == 'WITHDRAWAL' %}text-danger
+                                    {% else %}text-info{% endif %}">
+                                    {{ tx.get_transaction_type_display }}
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <span
+                                    class="fw-bold {% if tx.transaction_type == 'WITHDRAWAL' or tx.transaction_type == 'TRANSFER' %}text-danger{% else %}text-success{% endif %}">
+                                    {% if tx.transaction_type == 'WITHDRAWAL' or tx.transaction_type == 'TRANSFER' %}-{%
+                                    else %}+{% endif %}₹{{ tx.amount }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <p class="mb-0">No recent transactions found.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

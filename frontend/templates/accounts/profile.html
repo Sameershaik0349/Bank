@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - Bank of Mahishmathi{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-0 fade-in">
+            <div class="card-body p-5">
+                <h2 class="fw-bold mb-4 text-primary">My Profile</h2>
+
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">Username</label>
+                    <p class="fs-5">{{ user.username }}</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="text-muted small text-uppercase fw-bold">First Name</label>
+                        <p class="fs-5">{{ user.first_name|default:"-" }}</p>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="text-muted small text-uppercase fw-bold">Last Name</label>
+                        <p class="fs-5">{{ user.last_name|default:"-" }}</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">Email</label>
+                    <p class="fs-5">{{ user.email|default:"-" }}</p>
+                </div>
+
+                {% if user.phone_number %}
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">Phone</label>
+                    <p class="fs-5">{{ user.phone_number }}</p>
+                </div>
+                {% endif %}
+
+                {% if user.address %}
+                <div class="mb-4">
+                    <label class="text-muted small text-uppercase fw-bold">Address</label>
+                    <p class="fs-5">{{ user.address }}</p>
+                </div>
+                {% endif %}
+
+                <hr class="my-5">
+
+                <h4 class="text-danger fw-bold mb-3">Danger Zone</h4>
+                <p class="text-muted">Deleting your account is irreversible. All your data will be permanently removed.
+                </p>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteAccountModal">
+                    <i class="bi bi-trash"></i> Delete Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-danger">Delete Account?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you absolutely sure? This action cannot be undone.</p>
+                <form action="{% url 'delete_account' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required
+                            placeholder="Enter your password">
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Permanently Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

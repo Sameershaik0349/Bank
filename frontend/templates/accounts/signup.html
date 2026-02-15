@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - Bank of Mahishmathi{% endblock %}
+
+{% block extra_css %}
+<style>
+    .step-container {
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .step-container.active {
+        display: block;
+    }
+
+    .progress-wrapper {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .progress {
+        height: 4px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        background-color: var(--primary-color);
+        transition: width 0.4s ease;
+    }
+
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-top: -14px;
+    }
+
+    .step-dot {
+        width: 24px;
+        height: 24px;
+        background-color: #e9ecef;
+        border-radius: 50%;
+        border: 4px solid #fff;
+        box-shadow: 0 0 0 2px #e9ecef;
+        transition: all 0.4s ease;
+    }
+
+    .step-dot.active {
+        background-color: var(--primary-color);
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .step-dot.completed {
+        background-color: var(--success-color);
+        box-shadow: 0 0 0 2px var(--success-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0 fade-in">
+            <div class="card-body p-5">
+                <h2 class="text-center fw-bold mb-4 text-primary">Create Account</h2>
+
+                <!-- Progress Bar -->
+                <div class="progress-wrapper">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 33%" id="progressBar"></div>
+                    </div>
+                    <div class="step-indicator">
+                        <div class="step-dot active" id="dot1"></div>
+                        <div class="step-dot" id="dot2"></div>
+                        <div class="step-dot" id="dot3"></div>
+                    </div>
+                </div>
+
+                <form method="post" id="signupForm" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Step 1: Account Details -->
+                    <div class="step-container active" id="step1">
+                        <h4 class="mb-3">Account Details</h4>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                {{ form.first_name }}
+                                <div class="invalid-feedback">Alphabetic characters only (min 2).</div>
+                                {% if form.first_name.errors %}
+                                <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                                <div class="invalid-feedback">Alphabetic characters only (min 2).</div>
+                                {% if form.last_name.errors %}
+                                <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
+                            {{ form.email }}
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                            {% if form.email.errors %}
+                            <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                            {{ form.username }}
+                            <div class="form-text">Required. 150 characters or fewer.</div>
+                            <div class="invalid-feedback">Invalid username format.</div>
+                            {% if form.username.errors %}
+                            <div class="text-danger small">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label">Password</label>
+                            <!-- Manually rendering password fields to ensure correct ID targeting -->
+                            <input type="password" name="password1" id="id_password1" class="form-control" required
+                                autocomplete="new-password">
+
+                            <!-- Password Strength Meter -->
+                            <div class="password-strength-meter" id="passwordMeter">
+                                <div class="password-strength-bar"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Weak</div>
+
+                            <ul class="small text-muted mt-2 ps-3 mb-0" id="passwordHints">
+                                <li id="chk-len">At least 8 characters</li>
+                                <li id="chk-upper">One uppercase letter</li>
+                                <li id="chk-lower">One lowercase letter</li>
+                                <li id="chk-num">One number</li>
+                                <li id="chk-special">One special character</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password2" class="form-label">Confirm Password</label>
+                            <input type="password" name="password2" id="id_password2" class="form-control" required
+                                autocomplete="new-password">
+                            <div class="invalid-feedback">Passwords do not match.</div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next <i
+                                    class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Contact Info -->
+                    <div class="step-container" id="step2">
+                        <h4 class="mb-3">Contact Information</h4>
+
+                        <div class="mb-3">
+                            <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
+                            <input type="text" name="{{ form.phone_number.name }}"
+                                id="{{ form.phone_number.id_for_label }}" class="form-control"
+                                value="{{ form.phone_number.value|default:'' }}" placeholder="+1234567890">
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary" onclick="prevStep(2)">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next <i
+                                    class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Address -->
+                    <div class="step-container" id="step3">
+                        <h4 class="mb-3">Address</h4>
+
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
+                            <textarea name="{{ form.address.name }}" id="{{ form.address.id_for_label }}"
+                                class="form-control" rows="3">{{ form.address.value|default:'' }}</textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary" onclick="prevStep(3)">Back</button>
+                            <button type="submit" class="btn btn-success">Create Account</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="text-center mt-3">
+                    <p class="small text-muted">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{% url 'landing' %}" class="text-decoration-none text-muted small hover-underline">
+                        <i class="bi bi-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add bootstrap classes to form fields automatically if not present
+    document.querySelectorAll('input, textarea').forEach(el => {
+        if (!el.classList.contains('form-control')) el.classList.add('form-control');
+    });
+
+    // Validations
+    const validators = {
+        name: /^[a-zA-Z]{2,}$/,
+        username: /^.+$/, // Relaxed validation: just required
+        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    };
+
+    // Password Strength Logic
+    const passwordInput = document.getElementById('id_password1');
+    const meter = document.getElementById('passwordMeter');
+    const strengthText = document.getElementById('strengthText');
+
+    passwordInput.addEventListener('input', function () {
+        const val = this.value;
+        let score = 0;
+
+        // Checks
+        const checks = {
+            len: val.length >= 8,
+            upper: /[A-Z]/.test(val),
+            lower: /[a-z]/.test(val),
+            num: /[0-9]/.test(val),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(val)
+        };
+
+        // Update Hints
+        for (const [key, passed] of Object.entries(checks)) {
+            const el = document.getElementById('chk-' + key);
+            el.style.color = passed ? 'var(--success-color)' : '#999';
+            el.style.fontWeight = passed ? 'bold' : 'normal';
+            if (passed) score++;
+        }
+
+        // Update Meter
+        meter.className = 'password-strength-meter';
+        if (score <= 2) {
+            meter.classList.add('strength-weak');
+            strengthText.textContent = 'Weak';
+            strengthText.style.color = 'var(--danger-color)';
+        } else if (score <= 4) {
+            meter.classList.add('strength-medium');
+            strengthText.textContent = 'Medium';
+            strengthText.style.color = '#ff9800';
+        } else {
+            meter.classList.add('strength-strong');
+            strengthText.textContent = 'Strong';
+            strengthText.style.color = 'var(--success-color)';
+        }
+    });
+
+    function updateProgress(step) {
+        let width = '33%';
+        if (step === 2) width = '66%';
+        if (step === 3) width = '100%';
+
+        document.getElementById('progressBar').style.width = width;
+
+        for (let i = 1; i <= 3; i++) {
+            const dot = document.getElementById('dot' + i);
+            if (i < step) {
+                dot.classList.add('completed');
+                dot.classList.remove('active');
+            } else if (i === step) {
+                dot.classList.add('active');
+                dot.classList.remove('completed');
+            } else {
+                dot.classList.remove('active', 'completed');
+            }
+        }
+    }
+
+    function validateStep(step) {
+        let isValid = true;
+        const currentStepDiv = document.getElementById('step' + step);
+        const inputs = currentStepDiv.querySelectorAll('input, textarea');
+
+        inputs.forEach(input => {
+            // Skip optional fields if any (currently mostly required)
+
+            // Username Validation
+            if (input.name === 'username' && !validators.username.test(input.value)) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            }
+            // Name Validation
+            else if ((input.name === 'first_name' || input.name === 'last_name') && !validators.name.test(input.value)) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            }
+            // Email Validation
+            else if (input.name === 'email' && !validators.email.test(input.value)) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            }
+            // Password Match
+            else if (input.name === 'password2') {
+                const pass1 = document.getElementById('id_password1').value;
+                if (input.value !== pass1) {
+                    isValid = false;
+                    input.classList.add('is-invalid');
+                }
+            }
+            // General Required Check
+            else if (input.hasAttribute('required') && !input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+
+            // Real-time error removal
+            input.addEventListener('input', function () {
+                this.classList.remove('is-invalid');
+            });
+        });
+
+        // Special check for password complexity on submit/next
+        if (step === 1) {
+            const pass1 = document.getElementById('id_password1').value;
+            const checks = {
+                len: pass1.length >= 8,
+                upper: /[A-Z]/.test(pass1),
+                lower: /[a-z]/.test(pass1),
+                num: /[0-9]/.test(pass1),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(pass1)
+            };
+            if (!Object.values(checks).every(Boolean)) {
+                isValid = false;
+                document.getElementById('id_password1').classList.add('is-invalid');
+                // Could show a toast here ideally
+            }
+        }
+
+        return isValid;
+    }
+
+    function nextStep(current) {
+        if (!validateStep(current)) return;
+
+        document.getElementById('step' + current).classList.remove('active');
+        document.getElementById('step' + (current + 1)).classList.add('active');
+        updateProgress(current + 1);
+    }
+
+    function prevStep(current) {
+        document.getElementById('step' + current).classList.remove('active');
+        document.getElementById('step' + (current - 1)).classList.add('active');
+        updateProgress(current - 1);
+    }
+</script>
+{% endblock %}

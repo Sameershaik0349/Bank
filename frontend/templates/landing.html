@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome - Bank of Mahishmathi{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 5rem 0;
+        border-radius: var(--border-radius);
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        letter-spacing: -1px;
+        opacity: 0;
+        animation: fadeInUp 0.8s ease forwards 0.2s;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        font-weight: 300;
+        opacity: 0;
+        animation: fadeInUp 0.8s ease forwards 0.4s;
+    }
+
+    .hero-buttons {
+        opacity: 0;
+        animation: fadeInUp 0.8s ease forwards 0.6s;
+    }
+
+    .hero-btn {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        margin: 0.5rem;
+        border-radius: 50px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* About Section */
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--primary-color);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: 2px;
+    }
+
+    /* Features Grid */
+    .feature-card {
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        height: 100%;
+        border-radius: var(--border-radius);
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+        border-color: transparent;
+    }
+
+    .feature-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: rgba(26, 35, 126, 0.05);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon-wrapper {
+        transform: scale(1.1);
+        background: rgba(26, 35, 126, 0.1);
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+    }
+
+    .feature-title {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .feature-text {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        background: white;
+        padding: 4rem 0;
+        margin-top: 4rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Bank of Mahishmathi</h1>
+        <p class="hero-subtitle">Experience the legacy of trust, security, and modern digital banking. Your financial
+            empire starts here.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'signup' %}" class="btn btn-light text-primary hero-btn fw-bold">Open Account</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light hero-btn fw-bold">Login</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container py-5">
+    <h2 class="section-title">Why Choose Us</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-shield-lock-fill feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Secure Transactions</h3>
+                <p class="feature-text">State-of-the-art encryption ensures your wealth is protected with the highest
+                    security standards.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-lightning-charge-fill feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Instant Transfers</h3>
+                <p class="feature-text">Send and receive funds globally in seconds. No delays, just seamless financial
+                    flow.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-graph-up-arrow feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Smart Dashboard</h3>
+                <p class="feature-text">Track your expenses and savings with our intuitive, user-friendly digital
+                    interface.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="container py-5 mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2 class="section-title text-start">About Bank of Mahishmathi</h2>
+            <p class="lead text-muted mb-4">Building a legacy of financial excellence since 2026.</p>
+            <p class="mb-3">At Bank of Mahishmathi, we believe in combining traditional values of trust and integrity
+                with cutting-edge technology. Our mission is to empower individuals and businesses to achieve their
+                financial goals with confidence.</p>
+            <p>We are committed to providing transparency, security, and unparalleled customer service in every
+                interaction.</p>
+            <a href="{% url 'signup' %}" class="btn btn-primary mt-3">Join Our Family</a>
+        </div>
+        <div class="col-lg-6">
+            <div class="stats-section p-4">
+                <div class="row text-center">
+                    <div class="col-6 mb-4">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Secure</div>
+                    </div>
+                    <div class="col-6 mb-4">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-number">0.0s</div>
+                        <div class="stat-label">Latency</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Possibilities</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
