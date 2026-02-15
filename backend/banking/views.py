@@ -6,8 +6,6 @@ from django.db import transaction
 from decimal import Decimal
 
 def landing(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
     return render(request, 'landing.html')
 
 @login_required
